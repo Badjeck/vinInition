@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var request = new XMLHttpRequest();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -21,6 +22,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+request.open('GET', 'https://api.globalwinescore.com/globalwinescores/latest/?wine_id=&vintage=&color=&is_primeurs=&lwin=&lwin_11=&limit=&offset=&ordering=');
+
+request.setRequestHeader('Accept', 'application/json');
+request.setRequestHeader('Authorization', 'Token 7e34f8e21f62be35c2f042afff24c1b978fae73e');
+
+request.onreadystatechange = function () {
+  if (this.readyState === 4) {
+    console.log('Status:', this.status);
+    console.log('Headers:', this.getAllResponseHeaders());
+    console.log('Body:', this.responseText);
+  }
+};
+
+request.send();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
